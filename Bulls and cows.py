@@ -1,3 +1,10 @@
+print("""
+projekt_1.py: první projekt do Engeto Online Python Akademie
+author: Veronika Mikešová
+email: veronikamikesova@gmail.com
+discord: Veronika M.#2692
+""")
+
 # výběr náhodného 4ciferného čísla ze seznamu čísel v jiném souboru
 from random import choice
 from  cisla import random_cisla as cislo
