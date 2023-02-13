@@ -14,7 +14,9 @@ cara = "-" * 35
 
 print(cislo) # při hraní hry jen nutné skrýt
 
+print("Zadej číslo. Číslo musí být 4ciferné, nesmí začínat nulou a číslice se nesmí opakovat")
 zadane_cislo = input("Enter a number:") # hráč zadá svůj tip
+
 seznam_cisel = list(zadane_cislo)
 
  
