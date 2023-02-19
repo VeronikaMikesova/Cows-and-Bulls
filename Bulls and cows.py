@@ -5,30 +5,56 @@ email: veronikamikesova@gmail.com
 discord: Veronika M.#2692
 """
 
-# výběr náhodného 4ciferného čísla ze seznamu čísel v jiném souboru
-from random import choice
-from  cisla import random_cisla as cislo
-cislo = str(choice(cislo))
+import random
 
-
-# kontrola zadaného čísla
-def kontrola_cisla (hodnota) -> True:
-    mnozina_cisel = set(seznam_cisel) # pokud se množina zmenší, tak se v hadanem_cisle číslo opakuje, což nesmí
-    if hodnota.isnumeric() and len(hodnota) == 4 and hodnota[0] != "0" and len(seznam_cisel) == len(mnozina_cisel):
+# hlavní funkce - opakuj zadávání čísel, dokud číslo neuhodneš
+def uhodni_spravne_cislo(cislo_1, cislo_2) -> bool: 
+    hra_bezi = True
+    pocet_pokusu = 1
+    while hra_bezi:
+        while kontrola_cisla(cislo_2) is False:
+                cislo_2 = input("Chybně zadané číslo. Zkus zadat znovu:")
+                pocet_pokusu = pocet_pokusu + 1
+                continue
+        # pokud je vygenerované a zadané číslo správné, zjišťuji počet shodných číslic a jejich pozice v samostatné funkci
+        vysledek = existence_cislice(cislo_1, cislo_2)
+        zpusob_tisku(vysledek)  
+    
+        if opakovani(vysledek) is False:
+            cislo_2 = input("Ještě to není úplně ono. Zkus znovu:")
+            pocet_pokusu = pocet_pokusu + 1
+            continue
+        else:
+            hra_bezi = False
+            print("Hra ukončena")
+            print (f"Hledané číslo je", cislo_1)
+            if pocet_pokusu == 1:
+                print (f"Číslo bylo nalezeno po {pocet_pokusu} pokusu")
+                quit
+            else:
+                print (f"Číslo bylo nalezeno po {pocet_pokusu} pokusech")
+                quit
+        
+def kontrola_cisla(cislo:str) -> bool:
+    seznam = list(cislo)
+    mnozina_cisel = set(seznam)
+    if cislo.isnumeric() and len(cislo) == 4 and cislo[0] != "0" and len(mnozina_cisel) == len(seznam): # v případě PC čísla první 3 podmínky splněny vždy, ale ne u čísla od hráče
         return True
     else:
-        print ("Číslo zadáno chybně, ukončuji hru!")
         return False
+       
 
-# prověřit, zda ve náhodně vybraném čísle se nachází některá číslice ze zadaného čísla a kolikrát se pozice shoduje
-def existence_cislice(cislice):
-   vysledek = {"cows":0, "bulls":0}
-   for cislice in seznam_cisel:
-        if cislice in nahodny_seznam:
+def existence_cislice(cislo_1:str, cislo_2:str) -> dict:
+    pc_seznam = list(cislo_1)
+    muj_seznam = list(cislo_2)
+    vysledek = {"cows":0, "bulls":0}
+    for cislice in muj_seznam:
+        if cislice in pc_seznam:
             vysledek["cows"] = vysledek["cows"] + 1
-            if seznam_cisel.index(cislice) == nahodny_seznam.index(cislice):
+            if muj_seznam.index(cislice) == pc_seznam.index(cislice):
                vysledek["bulls"] = vysledek["bulls"] + 1
-   return vysledek
+    return vysledek 
+
 
 def zpusob_tisku(vysledek): 
     if vysledek["cows"] == 1:
@@ -41,46 +67,27 @@ def zpusob_tisku(vysledek):
         print(vysledek["cows"], "cows", vysledek["bulls"], "bull")
     
     else:
-        print(vysledek["cows"], "cows", vysledek["bulls"], "bulls") 
-    
-  
-def opakovani(vysledek):
+        print(vysledek["cows"], "cows", vysledek["bulls"], "bulls")
+
+def opakovani(vysledek) -> bool:
     if vysledek["cows"] == 4 and vysledek["bulls"] == 4:
-        print (f"Hledané číslo je", zadane_cislo)
-        if pocet_pokusu == 1:
-            print (f"Číslo bylo nalezeno po {pocet_pokusu} pokusu")
-        else:
-            print (f"Číslo bylo nalezeno po {pocet_pokusu} pokusech")
-        return False
-    else:
         return True
-
-# ZAČÁTEK HRY
-
-cara = "-" * 35
-pocet_pokusu = 0
-vysledek = {"cows":0, "bulls":0}
-
-print(cislo) # počítač vybere náhodné číslo ze souboru (při hraní hry jen nutné skrýt)
-nahodny_seznam = list(cislo)   # z náhodně vybraného čísla ze souboru se udělá seznam číslic
-
-zadane_cislo = input("Enter a number:") # hráč zadá svůj 1. tip
-print (cara)
-seznam_cisel = list(zadane_cislo) # ze zadaného čísla udělá seznam číslic
-
-if kontrola_cisla (zadane_cislo) is True:
-    pocet_pokusu += 1
-    zpusob_tisku(existence_cislice(zadane_cislo))
-    while opakovani(existence_cislice(zadane_cislo)) is True:
-          zadane_cislo = input("Enter a number:") # hráč zadá svůj další tip
-          print (cara)
-          seznam_cisel = list(zadane_cislo)
-          if kontrola_cisla (zadane_cislo) is True:
-            pocet_pokusu += 1
-            zpusob_tisku(existence_cislice(zadane_cislo))
-            opakovani(existence_cislice(zadane_cislo))
-          else:
-            quit
     else:
-        quit
-quit
+        return False
+
+
+def pc_cislo(cislo:str) -> str: # PC vygeneruje číslo splňující podmínky
+    while kontrola_cisla(cislo) is False:
+      cislo = str(random.randint(1000, 9999))  
+      continue
+    else:
+        cislo_1 = cislo
+    return str(cislo_1)
+
+# HRA ZAČÍNÁ
+cislo = str(random.randint(1000, 9999))
+cislo_1 = pc_cislo(cislo)
+print(cislo_1) # pro účely testování si vytisknu
+
+cislo_2 = input("Vlož číslo:")
+uhodni_spravne_cislo(cislo_1, cislo_2)
